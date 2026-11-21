@@ -1,6 +1,6 @@
 interface:
   display_name: "Research Flow"
-  short_description: "Triage and orchestrate research phases"
-  default_prompt: "Use $research-flow to triage whether this task needs bypass, light, or full research orchestration; for full mode discover installed skills, apply overrides and dependency preflight, build a capability map, lock one route and phase, and activate only the required primary skill."
+  short_description: "Triage, profile, and orchestrate research work"
+  default_prompt: "Use $research-flow to triage the request, select an artifact profile, build a capability map for full mode, run the pre-write gate, and activate only the required primary skill."
 policy:
   allow_implicit_invocation: true

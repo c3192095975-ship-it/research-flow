@@ -1,12 +1,12 @@
 ---
 name: research-flow
-description: Orchestrate scientific research work and prevent conflicting skill activation. Use when a request applies to a real research project and involves scoping, literature search or management, paper reading, study design, experiment records, research data analysis, statistics, scientific figures, manuscript/thesis/review/proposal writing, peer review, revision response, submission, or research presentation. Discover the user's installed skills, support explicit overrides and dependency preflight, and route by capability rather than a fixed skill list. Triage first so simple requests can bypass or use a light path, support explicit overrides and dependency preflight, and route by capability rather than a fixed skill list. Fall back to a portable baseline when no research skill is available. Do not use for general scholarly Q&A, ordinary coding, routine business data work, or non-research writing.
+description: Orchestrate scientific research work and prevent conflicting skill activation. Use when a request applies to a real research project and involves scoping, literature search or management, paper reading, study design, experiment records, research data analysis, statistics, scientific figures, manuscript/thesis/review/proposal writing, peer review, revision response, submission, or research presentation. Discover the user's installed skills, support explicit overrides and dependency preflight, and route by capability rather than a fixed skill list. Triage first, select an artifact profile, run a pre-write evidence gate for full projects, support explicit overrides and dependency preflight, and route by capability rather than a fixed skill list. Fall back to a portable baseline when no research skill is available. Do not use for general scholarly Q&A, ordinary coding, routine business data work, or non-research writing.
 metadata:
-  version: "3.2.0"
+  version: "3.3.0"
   short-description: Discover skills, resolve capabilities, and route research phases
 ---
 
-# Research Flow v3.2
+# Research Flow v3.3
 
 本 skill 是跨用户可移植的科研总编排器。它先发现当前用户安装了哪些 skill，再把科研流程的“能力槽”映射到实际可用的 skill。它不要求用户安装固定的 Nature、PaperSpine 或任何特定 skill。
 
@@ -29,6 +29,10 @@ metadata:
 13. 声明了 MCP、API、浏览器或环境变量依赖的 skill 必须标记可用性，不能把“已安装”当成“已就绪”。
 14. 进入流程后必须先做任务分级：`BYPASS`、`LIGHT` 或 `FULL`，简单任务不建立完整项目状态。
 15. 涉及核心引文、统计结论、伦理、隐私、投稿包或不可逆操作的任务，即使很短也不能因为“看起来简单”而跳过必要证据门。
+16. `FULL` 只表示需要完整阶段链，不表示所有可用 skill 都必须上场。
+17. FULL 模式在开始写作前必须先通过 pre-write gate：锁定 artifact profile、能力图、证据账本、required sections/rubric、claim boundary 和写作 owner。
+18. 质量门应按 artifact profile 适用；课程报告、论文、开题和展示不能共用同一套硬性检查。
+19. 本地 AI 风格检查不等于 Turnitin AI 率；本地重复预检不等于 Turnitin 查重；格式渲染成功不等于学术合规。
 
 以下任务不进入 ResearchFlow：一般概念问答、术语解释、翻译、普通编程、普通业务数据分析、非科研写作和与具体科研项目无关的闲聊。
 
@@ -44,15 +48,17 @@ metadata:
 6. **OVERRIDE**：读取用户/项目 override；用户明确指定的能力映射优先。
 7. **CLASSIFY**：识别探索、检索、精读、分析、写作、评审、回复或展示。
 8. **ROUTE**：锁定一个路线。
-9. **PHASE**：锁定一个入口阶段，并检查前置工件。
-10. **RESOLVE**：把阶段能力槽解析为一个主技能和一个可选辅助技能。
-11. **EXECUTE**：只执行当前阶段，不提前加载后续阶段。
-12. **GATE**：用可观察工件或检查结果判断是否通过。
-13. **HANDOFF**：输出状态、能力图、工件、未解决问题和下一阶段。
+9. **PROFILE**：选择 artifact profile，例如 `manuscript`、`course_report`、`proposal`、`thesis` 或 `presentation`。
+10. **PHASE**：锁定一个入口阶段，并检查前置工件。
+11. **PRE-WRITE GATE**：FULL 模式写作前检查能力图、证据账本、rubric、claim boundary 和写作 owner。
+12. **RESOLVE**：把阶段能力槽解析为一个主技能和一个可选辅助技能。
+13. **EXECUTE**：只执行当前阶段，不提前加载后续阶段。
+14. **GATE**：用可观察工件或检查结果判断是否通过。
+15. **HANDOFF**：输出状态、能力图、工件、未解决问题和下一阶段。
 
 开始时输出：
 
-`ResearchFlow：模式=…；路线=…；阶段=…；主技能=…；辅助技能=…；能力源=…；可用性=…`
+`ResearchFlow：模式=…；路线=…；profile=…；阶段=…；主技能=…；辅助技能=…；能力源=…；可用性=…`
 
 ### 任务分级
 
@@ -184,6 +190,8 @@ python3 scripts/discover_skills.py \
 | `delivery` | 文档、PPT、表格 | `documents`、`presentations`、`pptx`、`spreadsheets`、`office-academic-skill` |
 | `orchestration` | 多阶段总流程 | `paper-spine`、`academic-research-suite`，同一项目二选一 |
 | `memory` | 长期偏好和项目背景 | `personal-profile` |
+| `style_audit` | AI 文风、自然度和语言风格审计 | `avoid-ai-writing`、`shuorenhua`、`humanizer-zh-academic` |
+| `similarity_precheck` | 已知来源的本地重复风险预检 | 本地 n-gram/quote audit；不是 Turnitin |
 
 每个能力槽还要记录 `availability`：
 
@@ -215,6 +223,36 @@ python3 scripts/discover_skills.py \
 - `academic-research-suite` 与 `paper-spine` 不能同时担任同一项目的 orchestration owner。
 - 一个能力槽不能同时有两个 selected owner。
 - `personal-profile` 只提供 memory，不控制科研阶段。
+
+## 4.1 Artifact profiles
+
+路线回答“语言和学术风格是什么”，profile 回答“最终产物是什么”。两者必须同时锁定。
+
+| Profile | 适用 | 默认主路径 | 明确排除 |
+|---|---|---|---|
+| `manuscript` | 完整科研论文、期刊投稿 | 标准 0-12 阶段；按需加入统计、图表、投稿包 | 不适用于短作业 |
+| `course_report` | 课程报告、案例分析、伦理报告、实验报告 | `scientific-writing` + `nature-ref-verifier` + `peer-review` + `documents` | 不用 `paper-spine` 和 `nature-reviewer` 强行拉满 |
+| `proposal` | 开题、基金、研究计划 | `scientific-brainstorming` + `nature-proposal-writer` + 证据核验 | 不自动生成虚构预实验 |
+| `thesis` | 学位论文、毕业设计 | 中文/英文写作 owner + 章节证据门 + 格式生产 | 不把课程作业标准当论文标准 |
+| `presentation` | 组会、答辩、科研汇报 | 写作/图表产物 + 展示适配器 | 不改写研究结论以适配版式 |
+
+`course_report` 默认流程图：
+
+```text
+research-flow
+-> skill-triage
+-> scientific-brainstorming
+-> nature-ref-verifier
+-> scientific-writing
+-> nature-polishing
+-> style_audit（适用时）
+-> similarity_precheck（适用时）
+-> peer-review
+-> documents
+-> format/accessibility/integrity gate
+```
+
+FULL 模式并不要求所有阶段都执行；只执行 artifact profile 真正需要的阶段。详细 profile 规则见 `references/artifact-profiles.md`。
 
 ## 5. 阶段顺序
 
@@ -414,12 +452,25 @@ override 只决定能力槽，不修改任何 skill 源文件。override 指定�
 
 外部 agent 只承担边界清晰的独立任务，结果由主线程复核。未发表或敏感材料未经授权不得发送。方向是否继续、暂停或转向时，按全局 `AGENTS.md` 的多智能体对抗评审规则执行。
 
+## 12.1 Artifact quality gates
+
+FULL 和适用的 LIGHT 任务使用以下门；按 profile 标记 `required`、`optional` 或 `not_applicable`：
+
+- **Gate A：任务与 rubric 覆盖**：required sections、评分项、格式和受众全部覆盖。
+- **Gate B：证据与引用**：来源身份、使用方式、定位和 claim-evidence 可核验。
+- **Gate C：语言与 claim strength**：主张强度不超过证据，术语和语气一致。
+- **Gate D：原创性与风格预检**：AI 风格审计、已知来源重复风险、引用和题目重合；明确不是 Turnitin。
+- **Gate E：生产与格式**：构建、页面尺寸、字号、页眉页脚、占位符、图和 source data、可访问性。
+- **Gate F：独立完成与人工确认**：作者阅读、核对学生/作者信息、确认独立完成和最终提交。
+
+不是所有 profile 都要求 Gate D 或统计/图表检查。课程报告需要的是 rubric coverage、证据、语言、格式和人工确认；完整论文才通常需要更强的引用、统计和投稿包审计。详细规则见 `references/quality-gates.md`。
+
 ## 13. 输出契约
 
 阶段开始：
 
 ```text
-ResearchFlow：模式=BYPASS | LIGHT | FULL；路线=…；阶段=…；主技能=…；辅助技能=…；能力源=…；可用性=…
+ResearchFlow：模式=BYPASS | LIGHT | FULL；路线=…；profile=…；阶段=…；主技能=…；辅助技能=…；能力源=…；可用性=…
 ```
 
 首次建立能力图时，可补充：
@@ -455,6 +506,8 @@ ResearchFlow gate：pass / fail / pending
 - `references/capability-model.md`：能力槽、路线偏好、候选排序、冲突和降级矩阵。
 - `references/adaptation-protocol.md`：发现、合并、规范化、override、依赖预检、能力图、安全和失败处理。
 - `references/activation-order.md`：任务分级、路线决策树、阶段入口、阶段合同、场景和测试清单。
+- `references/artifact-profiles.md`：课程报告、论文、开题、学位论文和展示的产物 profile。
+- `references/quality-gates.md`：A-F 质量门、适用性、失败处理和本地检查边界。
 - `references/handoff-schemas.md`：项目状态、激活记录、能力图、可用性、证据账本、数据分析清单、图表计划、审稿和回复模板。
 - `references/baseline-protocol.md`：没有任何科研 skill 时的最低可运行流程。
 - `scripts/discover_skills.py`：只读扫描已安装 skill 并输出能力清单。

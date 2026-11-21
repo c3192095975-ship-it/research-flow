@@ -47,6 +47,38 @@
 
 短任务不等于低风险。任何涉及研究结论、引文、统计、伦理或最终提交的任务，都不能仅因为篇幅短而跳过相应检查。
 
+### 1.2 Artifact profile
+
+路线锁定后选择产物 profile：
+
+| Profile | 触发 | 默认重点 |
+|---|---|---|
+| `manuscript` | 期刊/会议完整论文 | evidence + analysis + statistics + figures + production |
+| `course_report` | 课程报告、案例分析、rubric 作业 | rubric + evidence + writing + format + human accountability |
+| `proposal` | 开题/基金/研究计划 | problem + design + feasibility + citations |
+| `thesis` | 学位论文/毕业设计 | chapters + consistency + school format |
+| `presentation` | 组会/答辩/科研汇报 | narrative + figures + visual QA |
+
+`FULL` 不等于所有能力都要使用。先选择 profile，再只启用该 profile 需要的阶段和能力。
+
+#### FULL pre-write gate
+
+正式写作前必须记录：
+
+```yaml
+artifact_profile:
+required_sections:
+rubric_or_acceptance_criteria:
+claim_boundary:
+evidence_ids:
+writing_owner:
+style_audit_required:
+similarity_precheck_required:
+format_requirements:
+```
+
+缺少证据或 rubric 时，先补缺口，不进入写作。
+
 ## 2. 路线选择决策树
 
 ```text
@@ -251,6 +283,14 @@ ResearchFlow：路线=chinese_thesis 或 general；阶段=11；主技能=nature-
 ### 场景 7：解释一下 p 值是什么
 
 不进入 ResearchFlow；这是概念问答，不是科研项目阶段。
+
+### 场景 8：课程报告/案例分析
+
+```text
+ResearchFlow：模式=FULL；路线=chinese_thesis 或 general；profile=course_report；阶段=8；主技能=scientific-writing
+```
+
+应检查 rubric、证据、引用、语言、格式和独立完成规则。没有数据时排除统计和图表；不是完整论文时排除 `paper-spine` 和 `nature-reviewer`。本地 AI 风格/重复检查明确不是 Turnitin。
 
 ## 8. 冲突测试清单
 

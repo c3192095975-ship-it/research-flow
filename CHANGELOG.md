@@ -1,5 +1,14 @@
 # Changelog
 
+## 3.3.0
+
+- Added artifact profiles: manuscript, course_report, proposal, thesis, and presentation.
+- Added a FULL-mode pre-write gate covering capability map, evidence, rubric, claim boundary, and writing owner.
+- Added style_audit and similarity_precheck capability slots.
+- Added A-F artifact quality gates and profile applicability rules.
+- Clarified that local AI-style and similarity checks are not Turnitin results.
+- Added course-report routing, exclusions, and contract tests.
+
 ## 3.2.0
 
 - Added a Triage Gate before skill discovery.

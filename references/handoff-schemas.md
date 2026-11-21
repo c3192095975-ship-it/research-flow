@@ -8,6 +8,7 @@ Read this reference when starting a multi-turn research project, resuming one, o
 flow_mode: BYPASS | LIGHT | FULL
 triage_reason:
 bypass_reason:
+artifact_profile: manuscript | course_report | proposal | thesis | presentation
 route: general | chinese_thesis | nature | systematic_review | competition
 modifiers: [] # lab | proposal | recurring_literature | presentation
 language: zh | en
@@ -37,6 +38,10 @@ A task may start at a later phase only when the prerequisite artifacts are prese
 detected_task_type:
 flow_mode:
 triage_reason:
+artifact_profile:
+required_sections:
+rubric_or_acceptance_criteria:
+prewrite_gate: pending | pass | fail | waived
 route_reason:
 entry_phase_reason:
 primary_skill_reason:
@@ -89,6 +94,16 @@ skills:
     availability: available | degraded | unavailable
     confidence: high | medium | low
     reason:
+  style_audit:
+    selected:
+    alternatives: []
+    availability: available | degraded | unavailable
+    confidence: high | medium | low
+  similarity_precheck:
+    selected:
+    alternatives: []
+    availability: available | degraded | unavailable
+    confidence: high | medium | low
   production:
     selected:
     alternatives: []
@@ -106,6 +121,34 @@ degraded_roles: []
 ```
 
 Only one `selected` skill may own a capability role in a given phase. Record why a non-default or degraded candidate was chosen.
+
+## Quality gate record
+
+```yaml
+profile:
+gates:
+  A_task_rubric:
+    status: pass | fail | pending | not_applicable
+    evidence:
+  B_evidence:
+    status:
+    evidence:
+  C_language_claims:
+    status:
+    evidence:
+  D_originality_style:
+    status:
+    evidence:
+  E_production_format:
+    status:
+    evidence:
+  F_human_accountability:
+    status:
+    evidence:
+local_checks:
+  style_audit_is_turnitin: false
+  similarity_precheck_is_turnitin: false
+```
 
 ## Research brief
 

@@ -215,3 +215,9 @@ reason: "missing environment variables: OPENALEX_API_KEY"
 - `FULL`：执行完整发现、依赖预检、override、去重和能力图。
 
 如果 LIGHT 任务后来升级为 FULL，再执行完整发现，不重复已完成的具体工件。
+
+## 17. Profile-aware resolution
+
+能力发现完成后，先锁定 `artifact_profile`，再解析能力槽。不要因为某个 skill 已安装就把它加入当前流程。
+
+例如 `course_report` 可以选择写作、引文核验、评审和文档生产，但没有数据或图表要求时不选择统计/绘图；`manuscript` 才按需要加入统计、图表和投稿包。

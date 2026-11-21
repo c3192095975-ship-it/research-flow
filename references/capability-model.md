@@ -21,6 +21,8 @@
 | `delivery` | 文档、PPT、表格和最终交付 | docx, pptx, presentation, slides, 汇报, 文档 | `documents`、`presentations`、`pptx`、`spreadsheets`、`office-academic-skill` |
 | `orchestration` | 总流程或多阶段编排 | end-to-end, workflow, orchestrator, 总流程 | `paper-spine`、`academic-research-suite`（按路线二选一） |
 | `memory` | 长期偏好、项目背景和决策上下文 | profile, preference, project history, 个人档案 | `personal-profile`（可选） |
+| `style_audit` | AI 风格、自然度和语言风格审计 | AI-style, humanize, natural writing, 去 AI 味, 润色 | `avoid-ai-writing`、`shuorenhua`、`humanizer-zh-academic` |
+| `similarity_precheck` | 已知来源的重复风险预检 | similarity, n-gram, overlap, 查重, 重复 | 本地 n-gram/quote audit；不是 Turnitin |
 
 一个 skill 可以匹配多个能力槽，但一次科研阶段只能占一个主能力槽。例如 `scientific-toolkit-skill` 可匹配 `analysis`，不应同时作为 `writing` 的主技能。
 
@@ -207,3 +209,15 @@ roles:
 - `FULL`：建立完整能力图、路线和阶段状态。
 
 如果任务涉及核心引文、统计结论、伦理、隐私、数据权限或最终投稿，即使文字很短也至少使用 LIGHT；涉及正式交付或高风险主张时使用 FULL。
+
+## 10. Artifact profile and capability selection
+
+先选择 `artifact_profile`，再选择能力：
+
+- `manuscript`：完整论文路径；
+- `course_report`：课程报告路径，通常不需要系统综述、统计或投稿包；
+- `proposal`：开题/基金路径；
+- `thesis`：学位论文路径；
+- `presentation`：科研展示路径。
+
+The presence of a skill does not make it applicable. A `FULL` course report may use `scientific-writing`, `nature-ref-verifier`, `peer-review`, `documents`, and optional `style_audit` / `similarity_precheck`, while deliberately excluding `paper-spine`, `nature-reviewer`, `nature-statistics`, and `nature-figure` when the artifact does not need them.

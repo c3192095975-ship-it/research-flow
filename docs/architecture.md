@@ -16,6 +16,21 @@ FULL   -> 完整发现、能力图、路线和阶段流程
 
 这样避免简单任务承担完整科研流程的上下文和检查成本。
 
+## 1.2 Profile Layer
+
+路线锁定语言和学术风格；artifact profile 锁定最终产物：
+
+```text
+route -> artifact_profile -> capability map -> stage contract
+```
+
+这避免了两种错误：
+
+1. 把所有科研 skill 强行塞进课程报告；
+2. 把课程报告的低标准应用给完整论文。
+
+质量门由 profile 决定适用性，而不是由“装了多少 skill”决定。
+
 ## 2. 分层
 
 ```text

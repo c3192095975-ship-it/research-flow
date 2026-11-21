@@ -58,6 +58,31 @@ BYPASS 不扫描全部 skill；LIGHT 只解析当前任务需要的一个主能�
 
 高风险任务不能被“篇幅短”误导：涉及核心引文、统计结论、伦理、隐私、数据权限或最终提交时，应进入 FULL 或至少 LIGHT。
 
+## 2.2 Artifact profile 与质量门
+
+在选择路线后，再选择最终产物 profile：
+
+| Profile | 适用 |
+|---|---|
+| `manuscript` | 完整科研论文、期刊投稿 |
+| `course_report` | 课程报告、案例分析、rubric 作业 |
+| `proposal` | 开题、基金、研究计划 |
+| `thesis` | 学位论文、毕业设计 |
+| `presentation` | 组会、答辩、科研汇报 |
+
+FULL 模式下，正式写作前必须通过 pre-write gate：能力图、证据账本、required sections/rubric、claim boundary 和写作 owner 都已明确。
+
+质量门：
+
+- Gate A：任务与 rubric 覆盖；
+- Gate B：证据与引文；
+- Gate C：语言与 claim strength；
+- Gate D：原创性与风格预检；
+- Gate E：生产与格式；
+- Gate F：独立完成与人工确认。
+
+Gate D 的本地检查不能替代 Turnitin 官方结果。
+
 ## 3. 自动触发
 
 真实科研任务会优先进入 Research Flow，例如：
