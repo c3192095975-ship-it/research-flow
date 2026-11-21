@@ -9,6 +9,8 @@ flow_mode: BYPASS | LIGHT | FULL
 triage_reason:
 bypass_reason:
 artifact_profile: manuscript | course_report | proposal | thesis | presentation
+quality_tier: course_pass | course_high | research_standard | publication_standard | custom
+tier_source: user | inferred | override
 route: general | chinese_thesis | nature | systematic_review | competition
 modifiers: [] # lab | proposal | recurring_literature | presentation
 language: zh | en
@@ -39,6 +41,8 @@ detected_task_type:
 flow_mode:
 triage_reason:
 artifact_profile:
+quality_tier:
+tier_source:
 required_sections:
 rubric_or_acceptance_criteria:
 prewrite_gate: pending | pass | fail | waived
@@ -126,6 +130,7 @@ Only one `selected` skill may own a capability role in a given phase. Record why
 
 ```yaml
 profile:
+quality_tier:
 gates:
   A_task_rubric:
     status: pass | fail | pending | not_applicable

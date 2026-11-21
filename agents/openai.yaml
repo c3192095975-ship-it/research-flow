@@ -1,6 +1,6 @@
 interface:
   display_name: "Research Flow"
-  short_description: "Triage, profile, and orchestrate research work"
-  default_prompt: "Use $research-flow to triage the request, select an artifact profile, build a capability map for full mode, run the pre-write gate, and activate only the required primary skill."
+  short_description: "Triage, profile, tier, and orchestrate research"
+  default_prompt: "Use $research-flow to triage the request, select an artifact profile and quality tier, build a capability map for full mode, run the pre-write gate, and activate only the required primary skill."
 policy:
   allow_implicit_invocation: true

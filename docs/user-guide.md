@@ -58,6 +58,19 @@ BYPASS 不扫描全部 skill；LIGHT 只解析当前任务需要的一个主能�
 
 高风险任务不能被“篇幅短”误导：涉及核心引文、统计结论、伦理、隐私、数据权限或最终提交时，应进入 FULL 或至少 LIGHT。
 
+## 2.3 Quality tier
+
+Artifact profile 只定义产物，quality tier 定义交付水平：
+
+- `course_pass`：满足基本 rubric；
+- `course_high`：课程高分；
+- `research_standard`：科研级证据、评审和论证；
+- `publication_standard`：投稿级要求。
+
+`course_report + research_standard` 是合法组合：产物仍是课程报告，但会加强 evidence、claim、review 和 reproducibility 检查。
+
+`course_report + publication_standard` 只适用于明确要求发表级组件的局部任务；真正投稿应切换为 `manuscript`。
+
 ## 2.2 Artifact profile 与质量门
 
 在选择路线后，再选择最终产物 profile：

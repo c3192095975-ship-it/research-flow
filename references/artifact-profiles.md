@@ -161,3 +161,16 @@ format_requirements:
 ```
 
 缺项时先补缺口，不允许用写作掩盖证据或 rubric 缺失。
+
+## 8. Quality tier pairing
+
+每个 profile 都必须同时选择 quality tier。常用组合：
+
+- `course_report + course_high`；
+- `course_report + research_standard`；
+- `manuscript + research_standard`；
+- `manuscript + publication_standard`；
+- `proposal/thesis + research_standard`；
+- `presentation + course_high/research_standard`。
+
+`course_report + publication_standard` 只能用于明确要求发表级组件的局部任务；真正投稿应切换到 `manuscript`。

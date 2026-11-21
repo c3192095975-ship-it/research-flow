@@ -221,3 +221,13 @@ roles:
 - `presentation`：科研展示路径。
 
 The presence of a skill does not make it applicable. A `FULL` course report may use `scientific-writing`, `nature-ref-verifier`, `peer-review`, `documents`, and optional `style_audit` / `similarity_precheck`, while deliberately excluding `paper-spine`, `nature-reviewer`, `nature-statistics`, and `nature-figure` when the artifact does not need them.
+
+## 11. Quality tier affects depth, not breadth
+
+Quality tier 改变证据、评审和质量门的深度，不自动增加 skill 数量。
+
+- `course_high` 可以增加独立 peer review，但不自动加入统计或投稿包。
+- `research_standard` 可以增加 claim-evidence、方法和限制审查。
+- `publication_standard` 才可能需要 venue-specific production、figures、statistics 和 submission package。
+
+同一 profile 在不同 tier 下可以使用不同能力深度，但仍必须保持一个阶段一个主技能。

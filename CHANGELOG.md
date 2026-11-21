@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.4.0
+
+- Added quality tiers: course_pass, course_high, research_standard, publication_standard, and custom.
+- Separated artifact profile from quality level.
+- Added auto-inference and conflict rules, including course_report + research_standard and publication-standard boundaries.
+- Added quality-tier-aware pre-write gate, capability depth, and Gate A-F applicability.
+- Added quality-tier handoff fields and contract tests.
+
 ## 3.3.0
 
 - Added artifact profiles: manuscript, course_report, proposal, thesis, and presentation.

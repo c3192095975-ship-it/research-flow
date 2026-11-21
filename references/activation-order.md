@@ -79,6 +79,20 @@ format_requirements:
 
 缺少证据或 rubric 时，先补缺口，不进入写作。
 
+### 1.3 Quality tier
+
+选择 artifact profile 后再选择 quality tier：
+
+| Profile | 默认 tier |
+|---|---|
+| `course_report` | `course_high` |
+| `manuscript` | `research_standard` |
+| `proposal` | `research_standard` |
+| `thesis` | `research_standard` |
+| `presentation` | `course_high` |
+
+用户明确说“按科研标准”时使用 `research_standard`；明确有期刊/会议投稿目标时使用 `publication_standard`。`course_report + publication_standard` 只能用于发表级组件，不得把课程报告伪装成投稿包。
+
 ## 2. 路线选择决策树
 
 ```text

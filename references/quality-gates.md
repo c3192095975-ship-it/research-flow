@@ -103,3 +103,15 @@
 4. 默认最多两轮。
 5. 第三轮必须有新证据、范围变化、用户明确要求或新风险。
 6. 不能因为某个门失败就换一个写作/图表/评审 skill 绕过。
+
+## Tier-strength matrix
+
+| Tier | A | B | C | D | E | F |
+|---|---|---|---|---|---|---|
+| `course_pass` | required | required | required | optional | required | required |
+| `course_high` | required | required | required | required when rules apply | required | required |
+| `research_standard` | required | required + claim matrix | required | required when originality rules apply | required | required |
+| `publication_standard` | required | required + venue audit | required | required per venue | required + package | required |
+| `custom` | define | define | define | define | define | required |
+
+Higher quality tier can increase evidence and review depth without adding irrelevant skills. A higher tier does not automatically mean `paper-spine`, `nature-reviewer`, `nature-statistics`, or `nature-figure` are applicable.

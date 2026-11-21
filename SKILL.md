@@ -1,12 +1,12 @@
 ---
 name: research-flow
-description: Orchestrate scientific research work and prevent conflicting skill activation. Use when a request applies to a real research project and involves scoping, literature search or management, paper reading, study design, experiment records, research data analysis, statistics, scientific figures, manuscript/thesis/review/proposal writing, peer review, revision response, submission, or research presentation. Discover the user's installed skills, support explicit overrides and dependency preflight, and route by capability rather than a fixed skill list. Triage first, select an artifact profile, run a pre-write evidence gate for full projects, support explicit overrides and dependency preflight, and route by capability rather than a fixed skill list. Fall back to a portable baseline when no research skill is available. Do not use for general scholarly Q&A, ordinary coding, routine business data work, or non-research writing.
+description: Orchestrate scientific research work and prevent conflicting skill activation. Use when a request applies to a real research project and involves scoping, literature search or management, paper reading, study design, experiment records, research data analysis, statistics, scientific figures, manuscript/thesis/review/proposal writing, peer review, revision response, submission, or research presentation. Discover the user's installed skills, support explicit overrides and dependency preflight, and route by capability rather than a fixed skill list. Triage first, select an artifact profile and quality tier, run a pre-write evidence gate for full projects, support explicit overrides and dependency preflight, and route by capability rather than a fixed skill list. Fall back to a portable baseline when no research skill is available. Do not use for general scholarly Q&A, ordinary coding, routine business data work, or non-research writing.
 metadata:
-  version: "3.3.0"
+  version: "3.4.0"
   short-description: Discover skills, resolve capabilities, and route research phases
 ---
 
-# Research Flow v3.3
+# Research Flow v3.4
 
 本 skill 是跨用户可移植的科研总编排器。它先发现当前用户安装了哪些 skill，再把科研流程的“能力槽”映射到实际可用的 skill。它不要求用户安装固定的 Nature、PaperSpine 或任何特定 skill。
 
@@ -30,9 +30,13 @@ metadata:
 14. 进入流程后必须先做任务分级：`BYPASS`、`LIGHT` 或 `FULL`，简单任务不建立完整项目状态。
 15. 涉及核心引文、统计结论、伦理、隐私、投稿包或不可逆操作的任务，即使很短也不能因为“看起来简单”而跳过必要证据门。
 16. `FULL` 只表示需要完整阶段链，不表示所有可用 skill 都必须上场。
-17. FULL 模式在开始写作前必须先通过 pre-write gate：锁定 artifact profile、能力图、证据账本、required sections/rubric、claim boundary 和写作 owner。
+17. FULL 模式在开始写作前必须先通过 pre-write gate：锁定 artifact profile、quality tier、能力图、证据账本、required sections/rubric、claim boundary 和写作 owner。
 18. 质量门应按 artifact profile 适用；课程报告、论文、开题和展示不能共用同一套硬性检查。
 19. 本地 AI 风格检查不等于 Turnitin AI 率；本地重复预检不等于 Turnitin 查重；格式渲染成功不等于学术合规。
+20. artifact profile 决定“产物是什么”，quality tier 决定“要达到什么标准”；两者不能混为一谈。
+21. quality tier 改变证据深度、评审强度、质量门和必要能力，不自动等于加载更多 skill。
+22. `auto` 只表示推断模式，最终必须解析为 `course_pass`、`course_high`、`research_standard` 或 `publication_standard`。
+23. `course_report + publication_standard` 只有在用户明确需要发表级组件时才允许；真正的投稿交付必须切换为 `manuscript` 或相称的 thesis/proposal profile。
 
 以下任务不进入 ResearchFlow：一般概念问答、术语解释、翻译、普通编程、普通业务数据分析、非科研写作和与具体科研项目无关的闲聊。
 
@@ -49,16 +53,17 @@ metadata:
 7. **CLASSIFY**：识别探索、检索、精读、分析、写作、评审、回复或展示。
 8. **ROUTE**：锁定一个路线。
 9. **PROFILE**：选择 artifact profile，例如 `manuscript`、`course_report`、`proposal`、`thesis` 或 `presentation`。
-10. **PHASE**：锁定一个入口阶段，并检查前置工件。
-11. **PRE-WRITE GATE**：FULL 模式写作前检查能力图、证据账本、rubric、claim boundary 和写作 owner。
-12. **RESOLVE**：把阶段能力槽解析为一个主技能和一个可选辅助技能。
-13. **EXECUTE**：只执行当前阶段，不提前加载后续阶段。
-14. **GATE**：用可观察工件或检查结果判断是否通过。
-15. **HANDOFF**：输出状态、能力图、工件、未解决问题和下一阶段。
+10. **QUALITY TIER**：选择质量等级：`course_pass`、`course_high`、`research_standard` 或 `publication_standard`；`auto` 必须解析为具体等级。
+11. **PHASE**：锁定一个入口阶段，并检查前置工件。
+12. **PRE-WRITE GATE**：FULL 模式写作前检查能力图、证据账本、rubric/acceptance criteria、claim boundary、写作 owner 和 quality tier。
+13. **RESOLVE**：把阶段能力槽解析为一个主技能和一个可选辅助技能，并按 quality tier 决定证据/评审强度。
+14. **EXECUTE**：只执行当前阶段，不提前加载后续阶段。
+15. **GATE**：用可观察工件或检查结果判断是否通过。
+16. **HANDOFF**：输出状态、能力图、工件、未解决问题和下一阶段。
 
 开始时输出：
 
-`ResearchFlow：模式=…；路线=…；profile=…；阶段=…；主技能=…；辅助技能=…；能力源=…；可用性=…`
+`ResearchFlow：模式=…；路线=…；profile=…；quality_tier=…；阶段=…；主技能=…；辅助技能=…；能力源=…；可用性=…`
 
 ### 任务分级
 
@@ -253,6 +258,35 @@ research-flow
 ```
 
 FULL 模式并不要求所有阶段都执行；只执行 artifact profile 真正需要的阶段。详细 profile 规则见 `references/artifact-profiles.md`。
+
+## 4.2 Quality tiers
+
+Quality tier 决定“做到什么程度”，而不是“换一个产物”。
+
+| Tier | 目标 | 典型变化 |
+|---|---|---|
+| `course_pass` | 满足课程/作业最低要求 | rubric 覆盖、基本证据与格式、人工确认 |
+| `course_high` | 课程高分标准 | brainstorm、更强证据、独立评审、语言与格式检查 |
+| `research_standard` | 接近科研论文标准 | claim-evidence 深度、方法/限制、独立 red-team review、统计/图表按需强化 |
+| `publication_standard` | 期刊/会议投稿标准 | venue 规则、完整统计/图表、投稿包、严格引用与合规 |
+| `custom` | 用户自定义 | 明确列出额外标准和检查 |
+
+### 自动推断
+
+- `course_report`：默认 `course_high`；用户明确只求通过时用 `course_pass`。
+- `manuscript`：默认 `research_standard`；有明确 venue/投稿目标时用 `publication_standard`。
+- `proposal` / `thesis`：默认 `research_standard`。
+- `presentation`：课程展示默认 `course_high`，科研答辩/组会可用 `research_standard`。
+- 用户说“按科研标准”“按投稿标准”“只要过作业要求”时，必须明确解析为具体 tier。
+
+### 标准冲突
+
+- `course_report + research_standard` 合法：保持课程产物，但提高证据、论证、评审和 claim 检查。
+- `course_report + publication_standard` 只适用于用户明确要求发表级组件的情况；真正投稿必须切换为 `manuscript` 或相称 profile。
+- `presentation + publication_standard` 通常不合法，除非目标是正式会议论文而不是展示。
+- quality tier 不是“越多 skill 越好”。它改变质量门和审查深度，不自动增加无关 skill。
+
+详细规则见 `references/quality-tiers.md`。
 
 ## 5. 阶段顺序
 
@@ -454,7 +488,7 @@ override 只决定能力槽，不修改任何 skill 源文件。override 指定�
 
 ## 12.1 Artifact quality gates
 
-FULL 和适用的 LIGHT 任务使用以下门；按 profile 标记 `required`、`optional` 或 `not_applicable`：
+FULL 和适用的 LIGHT 任务使用以下门；按 profile 和 quality tier 标记 `required`、`optional` 或 `not_applicable`：
 
 - **Gate A：任务与 rubric 覆盖**：required sections、评分项、格式和受众全部覆盖。
 - **Gate B：证据与引用**：来源身份、使用方式、定位和 claim-evidence 可核验。
@@ -470,7 +504,7 @@ FULL 和适用的 LIGHT 任务使用以下门；按 profile 标记 `required`、
 阶段开始：
 
 ```text
-ResearchFlow：模式=BYPASS | LIGHT | FULL；路线=…；profile=…；阶段=…；主技能=…；辅助技能=…；能力源=…；可用性=…
+ResearchFlow：模式=BYPASS | LIGHT | FULL；路线=…；profile=…；quality_tier=…；阶段=…；主技能=…；辅助技能=…；能力源=…；可用性=…
 ```
 
 首次建立能力图时，可补充：
@@ -507,6 +541,7 @@ ResearchFlow gate：pass / fail / pending
 - `references/adaptation-protocol.md`：发现、合并、规范化、override、依赖预检、能力图、安全和失败处理。
 - `references/activation-order.md`：任务分级、路线决策树、阶段入口、阶段合同、场景和测试清单。
 - `references/artifact-profiles.md`：课程报告、论文、开题、学位论文和展示的产物 profile。
+- `references/quality-tiers.md`：质量等级、自动推断、标准冲突和门槛升级规则。
 - `references/quality-gates.md`：A-F 质量门、适用性、失败处理和本地检查边界。
 - `references/handoff-schemas.md`：项目状态、激活记录、能力图、可用性、证据账本、数据分析清单、图表计划、审稿和回复模板。
 - `references/baseline-protocol.md`：没有任何科研 skill 时的最低可运行流程。

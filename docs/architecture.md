@@ -31,6 +31,16 @@ route -> artifact_profile -> capability map -> stage contract
 
 质量门由 profile 决定适用性，而不是由“装了多少 skill”决定。
 
+## 1.3 Quality Tier Layer
+
+质量等级独立于产物 profile：
+
+```text
+artifact_profile -> quality_tier -> capability depth -> gate strength
+```
+
+同一课程报告可以选择 `course_high` 或 `research_standard`。等级改变证据、评审和检查深度，不自动增加无关 skill。
+
 ## 2. 分层
 
 ```text

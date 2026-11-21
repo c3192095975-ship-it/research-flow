@@ -221,3 +221,9 @@ reason: "missing environment variables: OPENALEX_API_KEY"
 能力发现完成后，先锁定 `artifact_profile`，再解析能力槽。不要因为某个 skill 已安装就把它加入当前流程。
 
 例如 `course_report` 可以选择写作、引文核验、评审和文档生产，但没有数据或图表要求时不选择统计/绘图；`manuscript` 才按需要加入统计、图表和投稿包。
+
+## 18. Quality-tier-aware resolution
+
+完成 artifact profile 后，解析 quality tier。解析能力槽时要同时考虑 profile、tier、可用性和用户 override。
+
+高 tier 不等于加载更多 skill；它可能只增加证据检查、独立评审、统计审查或格式要求。如果 skill 只提升风格而不能提升当前质量门，不应为了“看起来更严格”而加载。
