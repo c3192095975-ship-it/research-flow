@@ -1,12 +1,12 @@
 ---
 name: research-flow
-description: Orchestrate scientific research work and prevent conflicting skill activation. Use when a request applies to a real research project and involves scoping, literature search or management, paper reading, study design, experiment records, research data analysis, statistics, scientific figures, manuscript/thesis/review/proposal writing, peer review, revision response, submission, or research presentation. Discover the user's installed skills, support explicit overrides and dependency preflight, and route by capability rather than a fixed skill list. Fall back to a portable baseline when no research skill is available. Do not use for general scholarly Q&A, ordinary coding, routine business data work, or non-research writing.
+description: Orchestrate scientific research work and prevent conflicting skill activation. Use when a request applies to a real research project and involves scoping, literature search or management, paper reading, study design, experiment records, research data analysis, statistics, scientific figures, manuscript/thesis/review/proposal writing, peer review, revision response, submission, or research presentation. Discover the user's installed skills, support explicit overrides and dependency preflight, and route by capability rather than a fixed skill list. Triage first so simple requests can bypass or use a light path, support explicit overrides and dependency preflight, and route by capability rather than a fixed skill list. Fall back to a portable baseline when no research skill is available. Do not use for general scholarly Q&A, ordinary coding, routine business data work, or non-research writing.
 metadata:
-  version: "3.1.0"
+  version: "3.2.0"
   short-description: Discover skills, resolve capabilities, and route research phases
 ---
 
-# Research Flow v3.1
+# Research Flow v3.2
 
 本 skill 是跨用户可移植的科研总编排器。它先发现当前用户安装了哪些 skill，再把科研流程的“能力槽”映射到实际可用的 skill。它不要求用户安装固定的 Nature、PaperSpine 或任何特定 skill。
 
@@ -27,6 +27,8 @@ metadata:
 11. 适配是运行时能力映射，不自动重写本 skill 或其他 skill 的源文件。
 12. 发现结果模糊时允许用户 override；仍无可用候选时使用 baseline，不假装拥有某个能力。
 13. 声明了 MCP、API、浏览器或环境变量依赖的 skill 必须标记可用性，不能把“已安装”当成“已就绪”。
+14. 进入流程后必须先做任务分级：`BYPASS`、`LIGHT` 或 `FULL`，简单任务不建立完整项目状态。
+15. 涉及核心引文、统计结论、伦理、隐私、投稿包或不可逆操作的任务，即使很短也不能因为“看起来简单”而跳过必要证据门。
 
 以下任务不进入 ResearchFlow：一般概念问答、术语解释、翻译、普通编程、普通业务数据分析、非科研写作和与具体科研项目无关的闲聊。
 
@@ -35,25 +37,96 @@ metadata:
 按以下顺序执行：
 
 1. **DETECT**：判断是否为真实科研任务。
-2. **DISCOVER**：读取宿主 skill 清单；必要时运行本地发现脚本。
-3. **NORMALIZE**：合并、去重、读取名称、描述、脚本、引用标题和调用策略。
-4. **PREFLIGHT**：检查非标准格式、依赖声明、环境变量和可用性状态。
-5. **OVERRIDE**：读取用户/项目 override；用户明确指定的能力映射优先。
-6. **CLASSIFY**：识别探索、检索、精读、分析、写作、评审、回复或展示。
-7. **ROUTE**：锁定一个路线。
-8. **PHASE**：锁定一个入口阶段，并检查前置工件。
-9. **RESOLVE**：把阶段能力槽解析为一个主技能和一个可选辅助技能。
-10. **EXECUTE**：只执行当前阶段，不提前加载后续阶段。
-11. **GATE**：用可观察工件或检查结果判断是否通过。
-12. **HANDOFF**：输出状态、能力图、工件、未解决问题和下一阶段。
+2. **TRIAGE**：判断应采用 `BYPASS`、`LIGHT` 还是 `FULL`。
+3. **DISCOVER**：仅 FULL 模式读取完整 skill 清单；LIGHT 只确认一个相关能力。
+4. **NORMALIZE**：合并、去重、读取名称、描述、脚本、引用标题和调用策略。
+5. **PREFLIGHT**：检查非标准格式、依赖声明、环境变量和可用性状态。
+6. **OVERRIDE**：读取用户/项目 override；用户明确指定的能力映射优先。
+7. **CLASSIFY**：识别探索、检索、精读、分析、写作、评审、回复或展示。
+8. **ROUTE**：锁定一个路线。
+9. **PHASE**：锁定一个入口阶段，并检查前置工件。
+10. **RESOLVE**：把阶段能力槽解析为一个主技能和一个可选辅助技能。
+11. **EXECUTE**：只执行当前阶段，不提前加载后续阶段。
+12. **GATE**：用可观察工件或检查结果判断是否通过。
+13. **HANDOFF**：输出状态、能力图、工件、未解决问题和下一阶段。
 
 开始时输出：
 
-`ResearchFlow：路线=…；阶段=…；主技能=…；辅助技能=…；能力源=…；可用性=…`
+`ResearchFlow：模式=…；路线=…；阶段=…；主技能=…；辅助技能=…；能力源=…；可用性=…`
+
+### 任务分级
+
+#### BYPASS
+
+以下任务不建立完整科研流程：
+
+- 纯概念、定义、公式解释或学习方法；
+- 只改一段文字、普通润色或翻译；
+- 只做普通格式化；
+- 只做一张简单图，且不承载研究结论；
+- 只做一次普通数据分析；
+- 用户明确要求只要一个简短结果，且不涉及证据、统计、伦理或投稿。
+
+BYPASS 行为：
+
+- 不扫描全部 skill；
+- 不建立完整能力图；
+- 直接使用一个基础能力或直接回答；
+- 不输出完整 ResearchFlow 状态。
+
+#### LIGHT
+
+以下任务只使用轻量流程：
+
+- 只检索一组文献；
+- 只精读一篇论文；
+- 只核对一组参考文献；
+- 只检查一段统计描述；
+- 只修改一个论文章节；
+- 只做一张有明确数据来源的科研图；
+- 只回复一条审稿意见。
+
+LIGHT 行为：
+
+- 只确认一个主能力；
+- 必要时加一个不同职责的辅助能力；
+- 不建立完整多阶段项目状态；
+- 只执行与当前任务直接相关的质量检查。
+
+#### FULL
+
+以下任务使用完整流程：
+
+- 从选题到论文；
+- 系统综述或多篇文献综合；
+- 数据分析、统计、图表和写作组合；
+- 投稿、返修、审稿回复或多轮评审；
+- 需要 claim-evidence、来源定位、数据可追溯或投稿包；
+- 同时涉及两个以上阶段；
+- 涉及核心引文、统计结论、伦理、隐私、数据权限或最终提交。
+
+FULL 行为：
+
+- 完整发现、合并、去重和建立能力图；
+- 锁定路线和入口阶段；
+- 执行阶段依赖、质量门和工件交接。
+
+#### 风险覆盖
+
+短任务不等于低风险。以下情况即使文字很少，也不能 BYPASS：
+
+- 核心研究主张或引文；
+- 统计显著性和因果结论；
+- 伦理、隐私、数据权限或作者贡献；
+- 投稿、返修、审稿回复或最终交付包。
+
+如果无法判断，优先选择 LIGHT；如果涉及上述高风险项，选择 FULL。
 
 ### 能力发现
 
-优先使用宿主已经提供的 skill 清单。需要补足本地 skill 或确认调用策略时，从本 skill 目录运行：
+FULL 模式优先使用宿主已经提供的 skill 清单，并在需要补足本地 skill、override 或依赖信息时运行发现脚本。LIGHT 模式只确认当前任务需要的单个能力，不建立完整能力图。BYPASS 不运行发现。
+
+需要完整发现时，从本 skill 目录运行：
 
 ```bash
 python3 scripts/discover_skills.py
@@ -346,7 +419,7 @@ override 只决定能力槽，不修改任何 skill 源文件。override 指定�
 阶段开始：
 
 ```text
-ResearchFlow：路线=…；阶段=…；主技能=…；辅助技能=…；能力源=…；可用性=…
+ResearchFlow：模式=BYPASS | LIGHT | FULL；路线=…；阶段=…；主技能=…；辅助技能=…；能力源=…；可用性=…
 ```
 
 首次建立能力图时，可补充：
@@ -381,7 +454,7 @@ ResearchFlow gate：pass / fail / pending
 
 - `references/capability-model.md`：能力槽、路线偏好、候选排序、冲突和降级矩阵。
 - `references/adaptation-protocol.md`：发现、合并、规范化、override、依赖预检、能力图、安全和失败处理。
-- `references/activation-order.md`：任务识别、路线决策树、阶段入口、阶段合同、场景和测试清单。
+- `references/activation-order.md`：任务分级、路线决策树、阶段入口、阶段合同、场景和测试清单。
 - `references/handoff-schemas.md`：项目状态、激活记录、能力图、可用性、证据账本、数据分析清单、图表计划、审稿和回复模板。
 - `references/baseline-protocol.md`：没有任何科研 skill 时的最低可运行流程。
 - `scripts/discover_skills.py`：只读扫描已安装 skill 并输出能力清单。

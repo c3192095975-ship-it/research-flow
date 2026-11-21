@@ -5,6 +5,9 @@ Read this reference when starting a multi-turn research project, resuming one, o
 ## Minimal project state
 
 ```yaml
+flow_mode: BYPASS | LIGHT | FULL
+triage_reason:
+bypass_reason:
 route: general | chinese_thesis | nature | systematic_review | competition
 modifiers: [] # lab | proposal | recurring_literature | presentation
 language: zh | en
@@ -32,6 +35,8 @@ A task may start at a later phase only when the prerequisite artifacts are prese
 
 ```text
 detected_task_type:
+flow_mode:
+triage_reason:
 route_reason:
 entry_phase_reason:
 primary_skill_reason:

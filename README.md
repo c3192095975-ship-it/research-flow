@@ -1,12 +1,13 @@
 # Research Flow
 
-[![Version](https://img.shields.io/badge/version-3.1.0-blue.svg)](VERSION)
+[![Version](https://img.shields.io/badge/version-3.2.0-blue.svg)](VERSION)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 Research Flow 是一个跨用户可移植的科研总编排 skill。它不会假定用户安装了某一套固定 skill，而是先发现当前环境中的 skill，再把科研流程映射到可用的“能力槽”。
 
 ## 功能
 
+- 启动时先做任务分级：BYPASS、LIGHT 或 FULL。
 - 自动发现本机安装的 Codex-compatible skills。
 - 按能力而不是固定名称选择检索、精读、分析、统计、图表、写作、评审和交付工具。
 - 同一阶段只允许一个主 skill，避免多个 skill 互相抢夺任务。
@@ -143,4 +144,4 @@ MIT。见 [LICENSE](LICENSE)。
 
 ## 版本
 
-当前版本：`3.1.0`。
+当前版本：`3.2.0`。

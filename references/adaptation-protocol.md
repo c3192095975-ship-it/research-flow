@@ -207,3 +207,11 @@ reason: "missing environment variables: OPENALEX_API_KEY"
 ## 15. 无 skill 基线
 
 所有发现和 override 都失败时，使用 `references/baseline-protocol.md`。基线流程不依赖任何科研 skill，但仍要求证据、数据、图表 source data、评审和作者确认。
+
+## 16. 按流程模式运行发现
+
+- `BYPASS`：不运行 skill 发现，不建立能力图。
+- `LIGHT`：只确认当前任务需要的单个能力，不扫描全部 skill；必要时读取宿主清单。
+- `FULL`：执行完整发现、依赖预检、override、去重和能力图。
+
+如果 LIGHT 任务后来升级为 FULL，再执行完整发现，不重复已完成的具体工件。

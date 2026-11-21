@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.2.0
+
+- Added a Triage Gate before skill discovery.
+- Added BYPASS, LIGHT, and FULL operating modes.
+- Added high-risk override so short citation, statistics, ethics, and submission tasks cannot bypass necessary checks.
+- Updated capability maps, handoff schemas, user guide, and architecture documentation for triage.
+
 ## 3.1.0
 
 - Added multi-signal capability discovery using metadata, script names, reference headings, and README excerpts.
