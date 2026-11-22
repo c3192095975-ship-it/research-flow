@@ -9,10 +9,20 @@ ROOT = Path(__file__).resolve().parents[1]
 class SkillContractTests(unittest.TestCase):
     def test_version_and_profiles(self) -> None:
         text = (ROOT / "SKILL.md").read_text(encoding="utf-8")
-        self.assertIn('version: "3.4.0"', text)
+        self.assertIn('version: "3.5.0"', text)
         for profile in ("manuscript", "course_report", "proposal", "thesis", "presentation"):
             self.assertIn(profile, text)
         self.assertIn("pre-write gate", text)
+
+    def test_v35_traceability(self) -> None:
+        text = (ROOT / "references" / "argument-and-traceability.md").read_text(encoding="utf-8")
+        self.assertIn("{{C001}}", text)
+        self.assertIn("claim_id,section_id,paragraph_id,figure_id", text)
+        designs = (ROOT / "references" / "research-designs.md").read_text(encoding="utf-8")
+        self.assertIn("experimental", designs)
+        self.assertIn("qualitative", designs)
+        self.assertIn("论证提纲", designs)
+        self.assertTrue((ROOT / "scripts" / "check_quality.py").is_file())
 
     def test_quality_tiers(self) -> None:
         text = (ROOT / "references" / "quality-tiers.md").read_text(encoding="utf-8")

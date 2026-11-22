@@ -1,12 +1,12 @@
 ---
 name: research-flow
-description: Orchestrate scientific research work and prevent conflicting skill activation. Use when a request applies to a real research project and involves scoping, literature search or management, paper reading, study design, experiment records, research data analysis, statistics, scientific figures, manuscript/thesis/review/proposal writing, peer review, revision response, submission, or research presentation. Discover the user's installed skills, support explicit overrides and dependency preflight, and route by capability rather than a fixed skill list. Triage first, select an artifact profile and quality tier, run a pre-write evidence gate for full projects, support explicit overrides and dependency preflight, and route by capability rather than a fixed skill list. Fall back to a portable baseline when no research skill is available. Do not use for general scholarly Q&A, ordinary coding, routine business data work, or non-research writing.
+description: Orchestrate scientific research work and prevent conflicting skill activation. Use for real research projects involving scoping, literature search or management, paper reading, study design, experiment records, data analysis, statistics, scientific figures, manuscript/thesis/review/proposal writing, peer review, revision response, submission, or research presentation. Triage first; select artifact profile, quality tier, and research design; build claim traceability and an argument outline before drafting; run recorded backtracking and executable checks; support overrides and dependency preflight. Fall back to a portable baseline when no research skill is available. Do not use for general scholarly Q&A, ordinary coding, routine business data work, or non-research writing.
 metadata:
-  version: "3.4.0"
+  version: "3.5.0"
   short-description: Discover skills, resolve capabilities, and route research phases
 ---
 
-# Research Flow v3.4
+# Research Flow v3.5
 
 本 skill 是跨用户可移植的科研总编排器。它先发现当前用户安装了哪些 skill，再把科研流程的“能力槽”映射到实际可用的 skill。它不要求用户安装固定的 Nature、PaperSpine 或任何特定 skill。
 
@@ -37,6 +37,12 @@ metadata:
 21. quality tier 改变证据深度、评审强度、质量门和必要能力，不自动等于加载更多 skill。
 22. `auto` 只表示推断模式，最终必须解析为 `course_pass`、`course_high`、`research_standard` 或 `publication_standard`。
 23. `course_report + publication_standard` 只有在用户明确需要发表级组件时才允许；真正的投稿交付必须切换为 `manuscript` 或相称的 thesis/proposal profile。
+24. 每个核心 claim 必须有 `claim_id`，并映射到 section/paragraph/figure/table；证据变化时只重审受影响的 claim 和相关段落。
+25. `course_high`、`research_standard` 和 `publication_standard` 在正式写作前必须建立 argument outline。
+26. 每个 FULL 项目必须选择 `research_design`：experimental、quantitative_observational、qualitative、systematic_review、theoretical、methods 或 case_analysis。
+27. 阶段回退必须有记录：from/to、原因、失效工件、需重跑检查和批准人；不能假装流程永远只能向前。
+28. 能确定性检查的项目先运行脚本，再交给作者判断科学意义；脚本通过不等于科学结论正确。
+29. `phase_name` 必须覆盖真实阶段，包括 reading 和 argument_outline，不能因模板漏项导致跨会话状态丢失。
 
 以下任务不进入 ResearchFlow：一般概念问答、术语解释、翻译、普通编程、普通业务数据分析、非科研写作和与具体科研项目无关的闲聊。
 
@@ -54,16 +60,18 @@ metadata:
 8. **ROUTE**：锁定一个路线。
 9. **PROFILE**：选择 artifact profile，例如 `manuscript`、`course_report`、`proposal`、`thesis` 或 `presentation`。
 10. **QUALITY TIER**：选择质量等级：`course_pass`、`course_high`、`research_standard` 或 `publication_standard`；`auto` 必须解析为具体等级。
-11. **PHASE**：锁定一个入口阶段，并检查前置工件。
-12. **PRE-WRITE GATE**：FULL 模式写作前检查能力图、证据账本、rubric/acceptance criteria、claim boundary、写作 owner 和 quality tier。
-13. **RESOLVE**：把阶段能力槽解析为一个主技能和一个可选辅助技能，并按 quality tier 决定证据/评审强度。
-14. **EXECUTE**：只执行当前阶段，不提前加载后续阶段。
-15. **GATE**：用可观察工件或检查结果判断是否通过。
-16. **HANDOFF**：输出状态、能力图、工件、未解决问题和下一阶段。
+11. **RESEARCH DESIGN**：选择 experimental、quantitative_observational、qualitative、systematic_review、theoretical、methods 或 case_analysis。
+12. **PHASE**：锁定一个入口阶段，并检查前置工件。
+13. **PRE-WRITE GATE**：FULL 模式写作前检查能力图、证据账本、claim traceability、argument outline、rubric/acceptance criteria、claim boundary、写作 owner、quality tier 和 research design。
+14. **RESOLVE**：把阶段能力槽解析为一个主技能和一个可选辅助技能，并按 quality tier 决定证据/评审强度。
+15. **EXECUTE**：只执行当前阶段，不提前加载后续阶段。
+16. **GATE**：用可观察工件或检查结果判断是否通过；可执行检查优先。
+17. **BACKTRACK**：必要时记录回退原因、失效工件和需重跑检查，不把流程当成只能前进的直线。
+18. **HANDOFF**：输出状态、能力图、工件、未解决问题和下一阶段。
 
 开始时输出：
 
-`ResearchFlow：模式=…；路线=…；profile=…；quality_tier=…；阶段=…；主技能=…；辅助技能=…；能力源=…；可用性=…`
+`ResearchFlow：模式=…；路线=…；profile=…；quality_tier=…；design=…；阶段=…；主技能=…；辅助技能=…；能力源=…；可用性=…`
 
 ### 任务分级
 
@@ -288,16 +296,67 @@ Quality tier 决定“做到什么程度”，而不是“换一个产物”。
 
 详细规则见 `references/quality-tiers.md`。
 
+## 4.3 Research designs
+
+Research design 决定证据和审查重点，避免所有项目都走“数据分析→统计→图表”。
+
+| Design | 适用 | 重点材料 | 审查重点 |
+|---|---|---|---|
+| `experimental` | 实验、干预、对照 | 实验记录、单位、重复、随机/盲法 | 混杂、误差、可复现、统计单位 |
+| `quantitative_observational` | 问卷、观测、横断面/队列 | 采样、变量、缺失、模型 | 选择偏差、混杂、模型假设 |
+| `qualitative` | 访谈、民族志、文本分析 | 访谈提纲、编码、反思性、引文 | 可信度、编码、研究者位置、伦理 |
+| `systematic_review` | PRISMA/元分析 | 检索式、纳排、偏倚评估、效应量 | 覆盖度、可复现、异质性 |
+| `theoretical` | 理论、概念、哲学论证 | 概念定义、前提、反例、逻辑链 | 概念清晰、反例、论证有效性 |
+| `methods` | 方法/工具/算法论文 | 设计、基线、消融、复现材料 | 新颖性、比较公平、可复现 |
+| `case_analysis` | 课程案例、伦理/政策分析 | 案例事实、规则/标准、替代解释 | 事实与规范分离、适用边界、建议可执行 |
+
+不能确定时，优先选择 `case_analysis` 或 `theoretical`；如果用户提供实验数据，选择 `experimental`；如果用户提供访谈材料，选择 `qualitative`。
+
+## 4.4 Claim traceability
+
+核心 claim 必须形成连续链：
+
+```text
+claim_id
+-> section_id
+-> paragraph_id
+-> figure/table id
+-> evidence_ids
+-> allowed wording
+```
+
+建议 `claim-evidence.csv` 字段：
+
+```csv
+claim_id,section_id,paragraph_id,figure_id,claim_text,evidence_ids,support_strength,allowed_wording,status,notes
+```
+
+正文中的 claim marker 使用：
+
+```text
+{{C001}}
+```
+
+规则：
+
+- 每个核心段落或图表至少绑定一个 claim；
+- claim marker 缺失时不能通过 Gate B；
+- 证据变化时，通过 claim_id 定位受影响的段落/图表并只重审这些位置；
+- 摘要、结果、讨论中的同一 claim 必须使用同一 ID 或明确映射。
+
+详细规则见 `references/argument-and-traceability.md`。
+
 ## 5. 阶段顺序
 
 ```text
 0 立项 -> 1 定向 -> 2 检索 -> 3 精读 -> 4 证据 -> 5 分析
--> 6 统计 -> 7 图表 -> 8 写作 -> 9 生产 -> 10 评审 -> 11 回复 -> 12 交付
+-> 6 统计 -> 7 图表 -> 7.5 论证提纲 -> 8 写作 -> 9 生产
+-> 10 评审 -> 11 回复 -> 12 交付
 ```
 
 强制依赖：
 
-- 写作前必须有证据账本；实证论文还需要结果和统计审查。
+- 写作前必须有证据账本；course_high/research_standard/publication_standard 还需要 argument outline；实证论文还需要结果和统计审查。
 - 图表前必须有数据、分析结果和科学问题。
 - 生产前必须有稿件、图表、引用和统计审查。
 - 评审前必须有冻结到可审查版本的产物。
@@ -331,6 +390,7 @@ Quality tier 决定“做到什么程度”，而不是“换一个产物”。
 | 5 分析 | `analysis` | `scientific-toolkit-skill`；实验型加 `nature-experiment-log` | 结果可复现，独立单位和样本量明确 |
 | 6 统计 | `statistics` | `nature-statistics` | 设计、分析单位、检验和主张一致 |
 | 7 图表 | `figures` | `scipilot-figure-skill`；Nature 路线用 `nature-figure` | 每个 panel 有科学问题，图和 source data 一致 |
+| 7.5 论证提纲 | `writing` 的 argument mode 或 `scope` | 每节问题、核心 claim、支持/反对证据、限制、章节关系 | 论证顺序清楚，claim 有证据 ID，反例和边界已列出 |
 | 8 写作 | `writing` | 路线对应的写作候选 | 每条事实主张有证据或 `AUTHOR_INPUT_NEEDED` |
 | 9 生产 | `production` | `paper-spine` 或通用文档构建工具 | 构建、编号、图注、引用和投稿包通过 |
 | 10 评审 | `review` | 自审用 `nature-reviewer`；审别人用 `peer-review` | 无未解决 P0，重大问题有证据定位 |
@@ -377,6 +437,31 @@ Quality tier 决定“做到什么程度”，而不是“换一个产物”。
 - 两个 orchestration owner
 - 两个长期文献订阅流程
 
+## 8.1 Recorded backtracking
+
+科研不是只能向前。出现以下情况时必须允许并记录回退：
+
+- 写作时发现证据缺口：8/7.5 -> 2/4；
+- 评审后发现分析错误：10 -> 5；
+- 统计审查失败：6 -> 5；
+- 图表和正文冲突：7/9 -> 5/7；
+- 最终声明不一致：12 -> 9/10；
+- 证据被替换：4/7.5/8 中受影响的部分重审。
+
+回退记录：
+
+```yaml
+from_phase:
+to_phase:
+reason:
+invalidated_artifacts: []
+checks_to_rerun: []
+approved_by:
+timestamp:
+```
+
+回退不是失败，而是科研流程的正常控制流。禁止无记录地悄悄回退或重复整套流程。
+
 ## 9. 能力图与交接
 
 文件型项目读取 `references/handoff-schemas.md`。每阶段至少交接：
@@ -422,7 +507,8 @@ degraded_roles: []
 
 - 检索记录和去重结果；
 - 来源可打开、定位可复核；
-- claim-evidence 完整性；
+- claim-evidence 完整性和 claim marker 可定位；
+- manifest/claim/evidence/占位符等确定性检查；
 - 数据/代码/环境可复现；
 - 图表 source data 和视觉 QA；
 - 文档构建和投稿包一致性。
@@ -546,5 +632,6 @@ ResearchFlow gate：pass / fail / pending
 - `references/handoff-schemas.md`：项目状态、激活记录、能力图、可用性、证据账本、数据分析清单、图表计划、审稿和回复模板。
 - `references/baseline-protocol.md`：没有任何科研 skill 时的最低可运行流程。
 - `scripts/discover_skills.py`：只读扫描已安装 skill 并输出能力清单。
+- `scripts/check_quality.py`：检查 claim ID、evidence ID、占位符和基础一致性。
 
 只有当前任务需要时再读取参考文件，不要预加载全部参考资料。

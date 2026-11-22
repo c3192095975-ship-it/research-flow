@@ -231,3 +231,15 @@ Quality tier 改变证据、评审和质量门的深度，不自动增加 skill 
 - `publication_standard` 才可能需要 venue-specific production、figures、statistics 和 submission package。
 
 同一 profile 在不同 tier 下可以使用不同能力深度，但仍必须保持一个阶段一个主技能。
+
+## 12. Research design and argument traceability
+
+能力选择还要考虑 `research_design`：
+
+- experimental/quantitative 需要 analysis、statistics、figures 的适用性检查；
+- qualitative 不应强行套统计；
+- systematic_review 需要 search、screening、bias/heterogeneity；
+- theoretical/case_analysis 主要需要 argument outline、evidence 和 review；
+- methods 需要 baseline、ablation、reproducibility 和 figure/source data。
+
+无论 design 是什么，`course_high`/`research_standard`/`publication_standard` 都应建立 claim traceability 和 argument outline。

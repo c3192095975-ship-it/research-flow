@@ -30,6 +30,8 @@
 增加：
 
 - 结构化 brainstorming；
+- argument outline；
+- claim/evidence 映射；
 - 更强的来源核验；
 - 独立 peer review；
 - 语言和 claim strength 检查；
@@ -43,6 +45,7 @@
 
 增加：
 
+- argument outline；
 - claim-evidence matrix；
 - 来源定位和引用核验；
 - 方法、限制、竞争解释；

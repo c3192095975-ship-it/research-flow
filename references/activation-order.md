@@ -93,6 +93,22 @@ format_requirements:
 
 用户明确说“按科研标准”时使用 `research_standard`；明确有期刊/会议投稿目标时使用 `publication_standard`。`course_report + publication_standard` 只能用于发表级组件，不得把课程报告伪装成投稿包。
 
+### 1.4 Research design
+
+选择研究设计以决定证据和审查重点：
+
+| Design | 重点 |
+|---|---|
+| `experimental` | 实验单位、对照、重复、可复现 |
+| `quantitative_observational` | 采样、变量、缺失、模型假设 |
+| `qualitative` | 编码、引文、反思性、伦理 |
+| `systematic_review` | 检索、纳排、偏倚、异质性 |
+| `theoretical` | 概念、前提、反例、论证 |
+| `methods` | 基线、消融、复现、比较公平 |
+| `case_analysis` | 案例事实、规则、替代解释、建议 |
+
+设计不确定时，有数据优先 quantitative/experimental；有访谈优先 qualitative；课程案例优先 case_analysis；纯概念论证优先 theoretical。
+
 ## 2. 路线选择决策树
 
 ```text
@@ -201,6 +217,7 @@ format_requirements:
 | 5 分析 | `scientific-toolkit-skill`；实验型加 `nature-experiment-log` | 明确数据或实验材料 | 数据清单、代码、命令、结果、不确定性和环境 | 结果可复现，独立单位和样本量明确 |
 | 6 统计 | `nature-statistics` | 阶段 5 或已有统计结果 | 统计审查、图表统计对齐、作者问题 | 设计、分析单位、检验和主张一致 |
 | 7 图表 | `scipilot-figure-skill`；Nature 路线用 `nature-figure` | 阶段 5，必要时阶段 6 | 图表计划、source data、图片、QA 报告 | 每个 panel 有科学问题，图和证据一致 |
+| 7.5 论证提纲 | `writing` 的 argument mode 或 `scientific-brainstorming` | 阶段 4；实证研究需阶段 5/6 | argument-outline.md、claim mapping | 每节有核心 claim、支持/反对证据、限制和章节连接 |
 | 8 写作 | `scientific-writing` / `research-writing-skill` / `nature-writing` | 阶段 4；实证工作另需 5/6 | 初稿、claim register、未解决占位符 | 每条事实主张对应证据或 `AUTHOR_INPUT_NEEDED` |
 | 9 生产 | `paper-spine` 的生产、构建、审计、投稿方法 | 阶段 7 和 8 | 可构建稿件、图表、引用、投稿包 | 构建、编号、图注、引用和包一致性通过 |
 | 10 评审 | 自审用 `nature-reviewer`；审别人用 `peer-review` | 阶段 9 或可审查稿件 | P0/P1/P2 审稿报告、证据定位、作者待确认项 | 无未解决 P0，重大问题有依据 |
@@ -305,6 +322,18 @@ ResearchFlow：模式=FULL；路线=chinese_thesis 或 general；profile=course_
 ```
 
 应检查 rubric、证据、引用、语言、格式和独立完成规则。没有数据时排除统计和图表；不是完整论文时排除 `paper-spine` 和 `nature-reviewer`。本地 AI 风格/重复检查明确不是 Turnitin。
+
+## 7.1 Recorded backtracking
+
+允许的回退包括：
+
+- 写作发现证据缺口：draft -> evidence/search；
+- 评审发现分析错误：review -> analysis；
+- 统计审查失败：statistics -> analysis；
+- 图表与正文冲突：figures/production -> analysis/figures；
+- 最终声明不一致：delivery -> production/review。
+
+每次回退记录 from/to、原因、失效工件、重跑检查和批准人。不得把回退当成新一轮无上下文的完整重跑。
 
 ## 8. 冲突测试清单
 

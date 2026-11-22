@@ -227,3 +227,9 @@ reason: "missing environment variables: OPENALEX_API_KEY"
 完成 artifact profile 后，解析 quality tier。解析能力槽时要同时考虑 profile、tier、可用性和用户 override。
 
 高 tier 不等于加载更多 skill；它可能只增加证据检查、独立评审、统计审查或格式要求。如果 skill 只提升风格而不能提升当前质量门，不应为了“看起来更严格”而加载。
+
+## 19. Research-design-aware resolution
+
+发现能力后先锁定 research_design，再决定 analysis/statistics/figures 是否适用。定性、理论、案例研究不应因为安装了统计或图表 skill 就自动启用它们。
+
+FULL 模式还应建立 argument outline 和 claim traceability；证据变化时按 claim ID 找到受影响段落，只重审相关位置。

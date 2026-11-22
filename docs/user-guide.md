@@ -96,6 +96,27 @@ FULL 模式下，正式写作前必须通过 pre-write gate：能力图、证据
 
 Gate D 的本地检查不能替代 Turnitin 官方结果。
 
+## 2.4 Research design 与论证追踪
+
+除了 profile 和 quality tier，还要选择研究类型：
+
+- experimental；
+- quantitative_observational；
+- qualitative；
+- systematic_review；
+- theoretical；
+- methods；
+- case_analysis。
+
+高等级任务还需要：
+
+1. 在证据核验后建立 argument outline；
+2. 每个核心段落/图表绑定 `claim_id`；
+3. 正文使用 `{{C001}}` marker；
+4. 证据变化时按 claim ID 定位受影响内容；
+5. 需要时记录 backtrack log；
+6. 运行 `scripts/check_quality.py` 做确定性检查。
+
 ## 3. 自动触发
 
 真实科研任务会优先进入 Research Flow，例如：

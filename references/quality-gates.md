@@ -19,12 +19,13 @@
 检查：
 
 - 每个来源的身份、标题、年份、作者、URL/DOI；
-- 每个核心 claim 是否有来源和定位；
+- 每个核心 claim 是否有来源、定位和 claim marker；
+- claim/evidence 是否存在断裂、未知 ID 或未核验记录；
 - 来源是否真的支持该主张；
 - 引用是否与 bibliography 一致；
 - 案例事实、法律/标准、作者推论是否分开。
 
-通过条件：没有伪造、错配或无法定位的核心来源。失败时回退 evidence 阶段，不用更漂亮的文字掩盖。
+通过条件：没有伪造、错配或无法定位的核心来源；claim register 与 evidence ledger 可以互相解析。先运行 `scripts/check_quality.py`，再做人工科学判断。失败时回退 evidence 或 argument outline，不用更漂亮的文字掩盖。
 
 ## Gate C: Language and claim strength
 
@@ -82,6 +83,24 @@
 - 是否区分内部质量评估和正式成绩/录用结果。
 
 通过条件：作者明确批准。AI 不能代替作者签字、提交或承担学术责任。
+
+## Executable checks
+
+可运行检查只处理确定性事实：
+
+- 重复 claim ID；
+- claim marker 不在 claim register；
+- evidence ID 不存在；
+- 未核验 evidence；
+- `TODO/TBD/AUTHOR_INPUT_NEEDED` 等占位符；
+- 基础 CSV 字段完整性；
+- argument outline 的必要字段。
+
+```bash
+python3 scripts/check_quality.py --manuscript manuscript.md --claims claim-evidence.csv --evidence evidence-ledger.csv
+```
+
+脚本通过不等于科学结论正确，也不等于 Turnitin 通过。
 
 ## Applicability matrix
 

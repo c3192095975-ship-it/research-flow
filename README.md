@@ -1,15 +1,27 @@
 # Research Flow
 
-[![Version](https://img.shields.io/badge/version-3.4.0-blue.svg)](VERSION)
+[![Version](https://img.shields.io/badge/version-3.5.0-blue.svg)](VERSION)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 Research Flow 是一个跨用户可移植的科研总编排 skill。它不会假定用户安装了某一套固定 skill，而是先发现当前环境中的 skill，再把科研流程映射到可用的“能力槽”。
+
+## v3.5 更新重点
+
+- 新增 research design：experimental、quantitative observational、qualitative、systematic review、theoretical、methods、case analysis。
+- 新增 argument outline：在证据核验和正式写作之间先固定章节问题、核心 claim、支持/反对证据和限制。
+- 新增 claim traceability：claim ID 可映射到 section、paragraph、figure/table 和 evidence ID。
+- 新增有记录的 stage backtracking：允许写作/评审后回到证据、分析或图表阶段，并记录失效工件。
+- 新增 `scripts/check_quality.py`：检查 claim ID、evidence ID、占位符、CSV 完整性和基础一致性。
+- 修复 `phase_name` 缺少 `reading` 和 `argument_outline` 的状态问题。
 
 ## 功能
 
 - 启动时先做任务分级：BYPASS、LIGHT 或 FULL。
 - 锁定 artifact profile：manuscript、course_report、proposal、thesis 或 presentation。
 - 锁定 quality tier：course_pass、course_high、research_standard 或 publication_standard。
+- 选择 research design：experimental、qualitative、systematic review、theoretical、methods 或 case analysis。
+- 在证据和写作之间建立 argument outline 与 claim traceability。
+- 支持有记录的阶段回退，并提供可执行的 claim/evidence/placeholder 检查。
 - FULL 模式写作前执行 pre-write gate，避免写作提前覆盖证据和 red-team review。
 - 使用 A-F artifact quality gates，按 profile 标记 required、optional 或 not_applicable。
 - 自动发现本机安装的 Codex-compatible skills。
@@ -28,6 +40,8 @@ Research Flow 是一个跨用户可移植的科研总编排 skill。它不会假
 - [产物 Profile](references/artifact-profiles.md)
 - [质量门](references/quality-gates.md)
 - [质量等级](references/quality-tiers.md)
+- [研究设计](references/research-designs.md)
+- [论证与证据追踪](references/argument-and-traceability.md)
 - [贡献指南](CONTRIBUTING.md)
 - [更新记录](CHANGELOG.md)
 
@@ -151,4 +165,4 @@ MIT。见 [LICENSE](LICENSE)。
 
 ## 版本
 
-当前版本：`3.4.0`。
+当前版本：`3.5.0`。

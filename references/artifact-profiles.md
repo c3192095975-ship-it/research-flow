@@ -145,6 +145,8 @@ research-flow
 
 ## 7. Pre-write gate
 
+`course_high`、`research_standard` 和 `publication_standard` 还必须建立 argument outline；研究型 profile 需要 claim traceability。
+
 FULL 模式在任何正式写作前必须确认：
 
 ```yaml

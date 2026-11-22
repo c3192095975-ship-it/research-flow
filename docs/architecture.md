@@ -41,6 +41,20 @@ artifact_profile -> quality_tier -> capability depth -> gate strength
 
 同一课程报告可以选择 `course_high` 或 `research_standard`。等级改变证据、评审和检查深度，不自动增加无关 skill。
 
+## 1.4 Evidence-to-Argument Layer
+
+```text
+evidence ledger
+-> claim register
+-> argument outline
+-> paragraph/figure markers
+-> draft
+```
+
+质量问题不再等到最后才检查；claim ID 和 evidence ID 让正文、图表和来源可以相互定位。
+
+阶段不是单向箭头。writing 发现证据缺口时，可以记录 backtrace 回到 search/evidence；review 发现分析错误时，可以回到 analysis。回退必须记录原因、失效工件和重跑检查。
+
 ## 2. 分层
 
 ```text

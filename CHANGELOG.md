@@ -1,5 +1,15 @@
 # Changelog
 
+## 3.5.0
+
+- Added research design profiles: experimental, quantitative_observational, qualitative, systematic_review, theoretical, methods, and case_analysis.
+- Added argument outline between evidence and drafting.
+- Added claim IDs, section/paragraph/figure mapping, and `{{C001}}` manuscript markers.
+- Added evidence-to-text impact analysis and recorded backtracking.
+- Added executable `check_quality.py` checks for claim IDs, evidence IDs, placeholders, and CSV completeness.
+- Fixed phase naming to include `reading` and `argument_outline`.
+- Added claim traceability, research-design, and checker tests.
+
 ## 3.4.0
 
 - Added quality tiers: course_pass, course_high, research_standard, publication_standard, and custom.

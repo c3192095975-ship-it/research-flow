@@ -11,6 +11,7 @@ bypass_reason:
 artifact_profile: manuscript | course_report | proposal | thesis | presentation
 quality_tier: course_pass | course_high | research_standard | publication_standard | custom
 tier_source: user | inferred | override
+research_design: experimental | quantitative_observational | qualitative | systematic_review | theoretical | methods | case_analysis
 route: general | chinese_thesis | nature | systematic_review | competition
 modifiers: [] # lab | proposal | recurring_literature | presentation
 language: zh | en
@@ -19,7 +20,7 @@ target_venue:
 deadline:
 entry_phase: 0-12
 current_phase: 0-12
-phase_name: intake | scope | search | evidence | analysis | statistics | figures | draft | production | review | response | delivery
+phase_name: intake | scope | search | reading | evidence | analysis | statistics | figures | argument_outline | draft | production | review | response | delivery
 primary_skill:
 auxiliary_skill:
 route_locked: true
@@ -43,10 +44,12 @@ triage_reason:
 artifact_profile:
 quality_tier:
 tier_source:
+research_design:
 required_sections:
 rubric_or_acceptance_criteria:
 prewrite_gate: pending | pass | fail | waived
 route_reason:
+research_design_reason:
 entry_phase_reason:
 primary_skill_reason:
 auxiliary_skill_reason:
@@ -155,6 +158,35 @@ local_checks:
   similarity_precheck_is_turnitin: false
 ```
 
+## Argument outline record
+
+```yaml
+outline_path:
+sections:
+  - section_id:
+    question:
+    core_claim_ids: []
+    supporting_evidence_ids: []
+    counterevidence: []
+    limitations: []
+    link_to_next:
+status: pending | pass | fail
+```
+
+## Backtrack log
+
+```yaml
+from_phase:
+to_phase:
+reason:
+invalidated_artifacts: []
+checks_to_rerun: []
+approved_by:
+timestamp:
+```
+
+Backtracking is a normal control flow. Record it; do not hide it or silently rerun the whole pipeline.
+
 ## Research brief
 
 ```markdown
@@ -184,7 +216,7 @@ The search log must allow another person to rerun the search without reconstruct
 ## Evidence ledger
 
 ```csv
-source_id,claim_id,locator,evidence_type,quoted_or_paraphrased,verification_status,notes
+evidence_id,source_id,claim_id,locator,evidence_type,quoted_or_paraphrased,verification_status,notes
 ```
 
 Use locators such as page, section, equation, figure, table, or reader block ID. Never use "somewhere in the paper" as a locator.
@@ -192,7 +224,7 @@ Use locators such as page, section, equation, figure, table, or reader block ID.
 ## Claim-evidence matrix
 
 ```csv
-claim_id,claim_text,evidence_ids,support_strength,gap,allowed_wording,author_input_needed
+claim_id,section_id,paragraph_id,figure_id,claim_text,evidence_ids,support_strength,allowed_wording,status,notes
 ```
 
 Allowed wording should distinguish association, mechanism, prediction, and causal claim.
